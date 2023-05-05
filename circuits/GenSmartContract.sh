@@ -1,0 +1,3 @@
+snarkjs zkey export solidityverifier eddsaposeidon_0001.zkey addsaposeidon_verifier.sol
+
+snarkjs generatecall

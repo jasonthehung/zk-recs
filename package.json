@@ -1,0 +1,31 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "test:eddsa": "npx mocha -r ts-node/register test/eddsaposeidon.test.ts --slow -1 --timeout 100000",
+        "test:deviceManager": "npx mocha -r ts-node/register test/deviceTreeManager.test.ts --slow -1 --timeout 100000",
+        "test:main": "npx mocha -r ts-node/register test/main.test.ts --slow -1 --timeout 100000"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@big-whale-labs/poseidon": "^0.0.5",
+        "@noble/curves": "^0.9.1",
+        "@types/chai": "^4.3.4",
+        "@types/mocha": "^10.0.0",
+        "@types/node": "^18.15.11",
+        "@types/text-encoding": "^0.0.36",
+        "chai": "^4.3.7",
+        "circom_tester": "^0.0.19",
+        "circomlib": "^2.0.5",
+        "circomlibjs": "^0.1.7",
+        "mocha": "^10.1.0",
+        "prettier": "^2.8.7",
+        "text-encoding": "^0.7.0",
+        "ts-node": "^10.9.1"
+    }
+}
