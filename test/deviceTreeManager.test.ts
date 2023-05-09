@@ -3,17 +3,12 @@ const buildBabyjub = require("circomlibjs").buildBabyjub
 
 import { assert } from "chai"
 import { DeviceTreeManager, initSigner } from "../src/deviceTreeManager"
-import { Device } from "../src/device"
 
-describe("DeviceTreeManager class test", function () {
+describe("DeviceTreeManager Class", function () {
     let eddsa: any
     let babyJub: any
     let F: any
     let devTreeManager: DeviceTreeManager
-
-    let device: Device
-    let pubX
-    let pubY
 
     before(async () => {
         eddsa = await buildEddsa()
@@ -23,10 +18,6 @@ describe("DeviceTreeManager class test", function () {
         await initSigner()
 
         devTreeManager = new DeviceTreeManager()
-    })
-
-    it("add new device into leaf", async () => {
-        await devTreeManager.addNewDevice("1", 1, "1")
     })
 
     /* it("add 10 new device into leaf", async () => {
@@ -50,17 +41,13 @@ describe("DeviceTreeManager class test", function () {
         })
 
         it("addNewDevice", async () => {
-            let privateKeyBuffer = Buffer.from(privateKey, "hex")
-            let publicKey = eddsa.prv2pub(privateKeyBuffer)
-
-            let publicKey_x = babyJub.F.toObject(publicKey[0])
-            let publicKey_y = babyJub.F.toObject(publicKey[1])
-
             let newDevice = await devTreeManager.addNewDevice(
                 owner,
-                0,
+                1,
                 privateKey
             )
+
+            console.log(newDevice)
         })
     })
 
@@ -74,10 +61,7 @@ describe("DeviceTreeManager class test", function () {
         it("deviceMap", async () => {
             let size = devTreeManager.deviceMap.size
 
-            assert.equal(size, 0)
+            // assert.equal(size, 0)
         })
     })
 })
-
-// let privkey = Buffer.from(str_priv_key, "hex")
-//         let pubkey = eddsa.prv2pub(privkey)

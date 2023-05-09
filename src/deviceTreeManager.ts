@@ -30,24 +30,14 @@ export class DeviceTreeManager extends ZKArray {
         })
     }
 
-    /* addNewDevice(deviceId: number, callbackfn: (elem: ZKObject) => void) {
-        // check if device already exists
-        if (this.deviceMap.has(deviceId)) {
-            throw new Error("Device already exists")
-        }
-
-        this.numberOfDevices++
-
-        return this.do(deviceId, callbackfn)
-    } */
-
     async addNewDevice(owner: string, deviceId: number, privateKey: string) {
         // check if device already exists
         if (this.deviceMap.has(deviceId)) {
             throw new Error("Device already exists")
         }
 
-        await initSigner()
+        // new Signer(privateKey)
+
         // calculate PubX PubY
         let F = babyJub.F
         const prvKey = Buffer.from(privateKey, "hex")
@@ -70,29 +60,34 @@ export class DeviceTreeManager extends ZKArray {
         return this.do(deviceId, (newDevice) => {
             newDevice.do("owner", (owner) => {
                 // ! debug console
-                console.log(`Owner is: ${owner.val()}`)
+                // console.log(`Owner is: ${owner.val()}`)
                 owner.set(bigIntOwner)
-                console.log(`Owner is: ${owner.val()}`)
-            }),
-                newDevice.do("privateKey", (privKey) => {
-                    // ! debug console
-                    console.log(`PrivateKey is: ${privKey.val()}`)
-                    privKey.set(bigIntPrivateKey)
-                    console.log(`PrivateKey is: ${privKey.val()}`)
-                }),
-                newDevice.do("Ax", (Ax) => {
-                    // ! debug console
-                    console.log(`Ax is: ${Ax.val()}`)
-                    Ax.set(pubX)
-                    console.log(`Ax is: ${Ax.val()}`)
-                }),
-                newDevice.do("Ay", (Ay) => {
-                    // ! debug console
-                    console.log(`Ay is: ${Ay.val()}`)
-                    Ay.set(pubY)
-                    console.log(`Ay is: ${Ay.val()}`)
-                })
+                // console.log(`Owner is: ${owner.val()}`)
+            })
+            newDevice.do("privateKey", (privKey) => {
+                // ! debug console
+                // console.log(`PrivateKey is: ${privKey.val()}`)
+                privKey.set(bigIntPrivateKey)
+                // console.log(`PrivateKey is: ${privKey.val()}`)
+            })
+            newDevice.do("Ax", (Ax) => {
+                // ! debug console
+                // console.log(`Ax is: ${Ax.val()}`)
+                Ax.set(pubX)
+                // console.log(`Ax is: ${Ax.val()}`)
+            })
+            newDevice.do("Ay", (Ay) => {
+                // ! debug console
+                // console.log(`Ay is: ${Ay.val()}`)
+                Ay.set(pubY)
+                // console.log(`Ay is: ${Ay.val()}`)
+            })
         })
+    }
+
+    getDevice() {
+        console.log(this.toObject())
+        return this.toObject()
     }
 
     updateDeviceOwner(newOwner: string, deviceId: number) {

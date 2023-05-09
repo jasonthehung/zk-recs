@@ -27,11 +27,16 @@ describe("Main", function () {
 
     it("add new device and sign msg", async () => {
         // Add new device (owner, deviceId, privateKey)
-        await deviceTreeManager.addNewDevice("1", 1, "1")
+        let a = await deviceTreeManager.addNewDevice("1", 1, "1")
 
         let device = deviceTreeManager.deviceMap.get(1)
         let signature = device.signMsg(1n)
 
-        console.log(signature)
+        console.log(a)
+        // console.log(signature)
+    })
+
+    it("get device", async () => {
+        let device = deviceTreeManager.getDevice()
     })
 })
