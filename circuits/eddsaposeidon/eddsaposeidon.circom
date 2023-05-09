@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with circom. If not, see <https://www.gnu.org/licenses/>.
 */
-pragma circom 2.0.0;
+pragma circom 2.1.0;
 
 include "../../node_modules/circomlib/circuits/compconstant.circom";
 include "../../node_modules/circomlib/circuits/poseidon.circom";
