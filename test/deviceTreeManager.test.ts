@@ -1,67 +1,39 @@
-const buildEddsa = require("circomlibjs").buildEddsa
-const buildBabyjub = require("circomlibjs").buildBabyjub
-
-import { assert } from "chai"
-import { DeviceTreeManager, initSigner } from "../src/deviceTreeManager"
+import { expect } from "chai"
+import { DeviceTreeManager } from "../src/deviceTreeManager"
+import { initSigner } from "../src/utils/keys"
 
 describe("DeviceTreeManager Class", function () {
-    let eddsa: any
-    let babyJub: any
-    let F: any
-    let devTreeManager: DeviceTreeManager
-
     before(async () => {
-        eddsa = await buildEddsa()
-        babyJub = await buildBabyjub()
-        F = babyJub.F
-
         await initSigner()
-
-        devTreeManager = new DeviceTreeManager()
     })
 
-    /* it("add 10 new device into leaf", async () => {
-        for (let i = 1; i <= 10; i++) {
-            let result = await devTreeManager.addNewDevice(
-                i.toString(),
-                i,
-                i.toString()
-            )
-            console.log(result)
+    it("Tree height is too low", async () => {
+        // 2^2 = 4 max leaf nodes
+        // 4 < 5
+
+        expect(() => new DeviceTreeManager(2, 5)).to.throw(
+            Error,
+            "Tree height is too low"
+        )
+    })
+
+    it("add 4 new devices", async () => {
+        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(2, 4)
+        let updateReceipt
+
+        for (let deviceId = 0; deviceId < 4; deviceId++) {
+            updateReceipt = devTreeManager.addNewDevice(deviceId)
+
+            console.log({
+                idx: updateReceipt["idx"].toString(),
+                mk_prf: updateReceipt["mk_prf"].toString(),
+                ori_leafNode: updateReceipt["flow"][0]["leaf_node"].toString(),
+                ori_root: updateReceipt["flow"][0]["root"].toString(),
+                new_leafNode: updateReceipt["flow"][1]["leaf_node"].toString(),
+                new_root: updateReceipt["flow"][1]["root"].toString(),
+            })
         }
-    }) */
-
-    describe("Function: addNewDevice test", function () {
-        let owner: string
-        let privateKey: string
-
-        before(async () => {
-            owner = "1"
-            privateKey = "1"
-        })
-
-        it("addNewDevice", async () => {
-            let newDevice = await devTreeManager.addNewDevice(
-                owner,
-                1,
-                privateKey
-            )
-
-            console.log(newDevice)
-        })
     })
 
-    describe("Simple tests", function () {
-        it("constructor", async () => {
-            let devTreeManager = new DeviceTreeManager()
-
-            assert.equal(devTreeManager.numberOfDevices, 0)
-        })
-
-        it("deviceMap", async () => {
-            let size = devTreeManager.deviceMap.size
-
-            // assert.equal(size, 0)
-        })
-    })
+    describe("Simple tests", function () {})
 })

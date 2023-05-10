@@ -43,10 +43,7 @@ template MKP_Verify(tree_height){
 
 
 
-
-
-
-template ZkREC(device_tree_height) {
+template ZkRECRegister(device_tree_height) {
     signal input enabled;
     signal input Ax;
     signal input Ay;

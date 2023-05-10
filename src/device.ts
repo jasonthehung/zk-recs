@@ -15,19 +15,13 @@ export async function initSigner() {
 }
 
 export class Device extends ZKObject {
-    static required = [
-        "owner",
-        "deviceId",
-        "totalGenValue",
-        "privateKey",
-        "Ax",
-        "Ay",
-    ]
+    static required = ["owner", "deviceId", "nonce", "totalKW", "Ax", "Ay"]
 
     public owner: bigint
     public deviceId: bigint
+    public nonce = 0n
 
-    public totalGenValue = 0n
+    public totalKW = 0n
 
     private privateKey: string
     public Ax: unknown // public key X
