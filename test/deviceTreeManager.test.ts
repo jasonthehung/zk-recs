@@ -66,7 +66,7 @@ describe("DeviceTreeManager Class", function () {
     }) */
 
     it("Device sign msg and update merkle tree leaf", () => {
-        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(6, 10)
+        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(5, 20)
 
         let MsgArray = []
         let AxArray = []
@@ -84,7 +84,7 @@ describe("DeviceTreeManager Class", function () {
 
         let updateReceipt
 
-        for (let deviceId = 0; deviceId < 10; deviceId++) {
+        for (let deviceId = 0; deviceId < 20; deviceId++) {
             let device = devTreeManager.initDevice(deviceId)
             let signature = device.signMsg(99n)
 
@@ -95,6 +95,7 @@ describe("DeviceTreeManager Class", function () {
             R8yArray.push(signature[1]["R8y"].toString())
             SArray.push(signature[1]["S"].toString())
 
+            // ! change here
             updateReceipt = devTreeManager.addNewDevice(deviceId)
 
             deviceIndexArray.push(updateReceipt[1]["idx"].toString())
@@ -108,6 +109,7 @@ describe("DeviceTreeManager Class", function () {
         }
 
         const result = JSON.stringify({
+            enabled: "1",
             Ax: AxArray,
             Ay: AyArray,
             R8x: R8xArray,

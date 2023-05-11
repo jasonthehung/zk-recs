@@ -60,9 +60,21 @@ template ZkREC(deviceTreeHeight, numberOfDevice) {
     signal input oriRoot[numberOfDevice];
     signal input newRoot[numberOfDevice];
 
+    component verifySig[numberOfDevice];
+
+
+    
 
     for(var i = 0; i < numberOfDevice; i++) {
-        EdDSAPoseidonVerifier()(enabled, Ax[i], Ay[i], R8x[i], R8y[i], S[i], M[i]);
+        verifySig[i] = EdDSAPoseidonVerifier();
+
+        verifySig[i].enabled <== 1 ;
+        verifySig[i].Ax <== Ax[i];
+        verifySig[i].Ay <== Ay[i];
+        verifySig[i].S <== S[i];
+        verifySig[i].R8x <== R8x[i];
+        verifySig[i].R8y <== R8y[i];
+        verifySig[i].M <== M[i];
 
         VerifyExists(deviceTreeHeight)(deviceIndex[i], Poseidon(6)([oriLeaf[i][0],oriLeaf[i][1],oriLeaf[i][2],oriLeaf[i][3],oriLeaf[i][4],oriLeaf[i][5]]), merkleProof[i], oriRoot[i]);
 
