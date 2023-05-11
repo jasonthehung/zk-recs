@@ -1,5 +1,5 @@
 start=$(date +%s)
-filename=$(date "+%Y%m%d%H%M%S")
+filename=$(date "+%Y%m%d")
 
 if [ -f "./test/circuits/$1/$1_setup/$1_final.zkey" ]; then
     cd ./test/circuits/$1/
@@ -19,7 +19,7 @@ fi
 
 end=$(date +%s)
 time=$(echo $start $end | awk '{print $2-$1}')
-d=$(date "+%Y-%m-%d %H:%M:%S")
+d=$(date "+%Y-%m-%d")
 
 [ ! -f ./log/"$filename"_"$1"_P.txt ] && touch ./log/"$filename"_"$1"_P.txt
 echo "[$d] $1 P: $time s" >./log/"$filename"_"$1"_P.txt

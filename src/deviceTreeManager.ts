@@ -23,12 +23,20 @@ export class DeviceTreeManager extends ZKArray {
         })
     }
 
-    private initDevicePrivateKey(amount: number) {
-        for (let i = 0; i < amount; i++) {
-            // 隨機計算出private key給對應的device
-            let privKey = getRandomInt().toString()
+    initDevice(deviceId: number, owner = "0") {
+        if (this.devicePrivateKey.get(deviceId) !== undefined) {
+            throw new Error("This device has already been registered")
+        } else {
+            // 隨機算出private key
+            let privateKey = getRandomInt().toString()
 
-            this.devicePrivateKey.set(i, privKey)
+            // set private key into devicePrivateKey map
+            this.devicePrivateKey.set(deviceId, privateKey)
+
+            // 計算得到public key
+            const [pubX, pubY] = getPublicKey(privateKey)
+
+            return new Device(owner, deviceId, privateKey, pubX, pubY)
         }
     }
 

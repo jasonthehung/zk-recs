@@ -9,7 +9,7 @@ const buildBabyjub = require("circomlibjs").buildBabyjub
 let eddsa
 let babyJub
 
-export async function initSigner() {
+export async function initSignerFromDevice() {
     eddsa = await buildEddsa()
     babyJub = await buildBabyjub()
 }
@@ -45,28 +45,29 @@ export class Device extends ZKObject {
     }
 
     signMsg(value: bigint) {
-        let req = this.genRequest(value)
-
         const prvKey = Buffer.from(this.privateKey, "hex")
         // const msg = babyJub.F.e(this.encodeReqToMsg(req))
 
         const msg = babyJub.F.e(value)
 
-        console.log(`msg: ${babyJub.F.toObject(msg)}`)
-        console.log(`Ax: ${this.Ax}`)
-        console.log(`Ay: ${this.Ay}`)
-        console.log(`private key: ${this.privateKey}`)
+        // console.log(`msg: ${babyJub.F.toObject(msg)}`)
+        // console.log(`Ax: ${this.Ax}`)
+        // console.log(`Ay: ${this.Ay}`)
+        // console.log(`private key: ${this.privateKey}`)
 
         const sig = eddsa.signPoseidon(prvKey, msg)
 
-        console.log(babyJub.F.toObject(sig.R8[0]))
-        console.log(babyJub.F.toObject(sig.R8[1]))
+        // console.log(babyJub.F.toObject(sig.R8[0]))
+        // console.log(babyJub.F.toObject(sig.R8[1]))
 
-        return new Signature(
-            babyJub.F.toObject(sig.R8[0]),
-            babyJub.F.toObject(sig.R8[1]),
-            sig.S
-        )
+        return [
+            { M: value, Ax: this.Ax, Ay: this.Ay },
+            new Signature(
+                babyJub.F.toObject(sig.R8[0]),
+                babyJub.F.toObject(sig.R8[1]),
+                sig.S
+            ),
+        ]
     }
 
     private encodeReqToMsg(request: Request): bigint {

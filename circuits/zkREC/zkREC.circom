@@ -41,37 +41,35 @@ template MKP_Verify(tree_height){
 
 
 
-
-
-
-
-
-template ZkREC(device_tree_height) {
+template ZkREC(deviceTreeHeight, numberOfDevice) {
     signal input enabled;
-    signal input Ax;
-    signal input Ay;
-    signal input S;
-    signal input R8x;
-    signal input R8y;
-    signal input M;
+
+    signal input Ax[numberOfDevice];
+    signal input Ay[numberOfDevice];
+    signal input R8x[numberOfDevice];
+    signal input R8y[numberOfDevice];
+    signal input S[numberOfDevice];
+    signal input M[numberOfDevice];
+
+    signal input deviceIndex[numberOfDevice];
+    signal input merkleProof[numberOfDevice][deviceTreeHeight];
+
+    signal input oriLeaf[numberOfDevice][6];
+    signal input newLeaf[numberOfDevice][6];
+
+    signal input oriRoot[numberOfDevice];
+    signal input newRoot[numberOfDevice];
 
 
-    signal input idx;
-    signal input leaf[2][5];
-    // signal input leaf_node[2]; // 
-    signal input merkle_proof[device_tree_height];
-    signal input merkle_root[2]; //
+    for(var i = 0; i < numberOfDevice; i++) {
+        EdDSAPoseidonVerifier()(enabled, Ax[i], Ay[i], R8x[i], R8y[i], S[i], M[i]);
 
+        VerifyExists(deviceTreeHeight)(deviceIndex[i], Poseidon(6)([oriLeaf[i][0],oriLeaf[i][1],oriLeaf[i][2],oriLeaf[i][3],oriLeaf[i][4],oriLeaf[i][5]]), merkleProof[i], oriRoot[i]);
 
-    EdDSAPoseidonVerifier()(1, Ax, Ay, S, R8x, R8y, M);
-
-    VerifyExists(device_tree_height)(idx, Poseidon(5)[leaf[0]], merkle_proof, merkle_root[0]);
-    VerifyExists(device_tree_height)(idx,  Poseidon(5)[leaf[1]], merkle_proof, merkle_root[1]);
-    
-    leaf[0][] === leaf[1][]
-    leaf[0][] === leaf[1][]
-    leaf[0][] === leaf[1][]
-    leaf[0][] === leaf[1][]
-    leaf[0][] === leaf[1][]
+        // oriLeaf[i][2] === 0
+        // oriLeaf[i][3] === 0
+        
+        VerifyExists(deviceTreeHeight)(deviceIndex[i], Poseidon(6)([newLeaf[i][0],newLeaf[i][1],newLeaf[i][2],newLeaf[i][3],newLeaf[i][4],newLeaf[i][5]]), merkleProof[i], newRoot[i]);
+    }
 }
 

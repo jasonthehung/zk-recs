@@ -1,14 +1,16 @@
 import { expect } from "chai"
 import { DeviceTreeManager } from "../src/deviceTreeManager"
 import { initSigner } from "../src/utils/keys"
-import { readFile } from "../src/utils/writeFile"
+import { initSignerFromDevice } from "../src/device"
 
 import * as fs from "fs"
-import * as path from "path"
+import { Device } from "../src/device"
 
 describe("DeviceTreeManager Class", function () {
     before(async () => {
         await initSigner()
+
+        await initSignerFromDevice()
     })
 
     it("Tree height is too low", async () => {
@@ -21,8 +23,8 @@ describe("DeviceTreeManager Class", function () {
         )
     })
 
-    it("add 4 new devices", async () => {
-        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(2, 4)
+    /* it("add new devices", async () => {
+        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(6, 50)
         let updateReceipt
 
         let deviceIndexArray = []
@@ -32,7 +34,7 @@ describe("DeviceTreeManager Class", function () {
         let oriRootArray = []
         let newRootArray = []
 
-        for (let deviceId = 0; deviceId < 2; deviceId++) {
+        for (let deviceId = 0; deviceId < 50; deviceId++) {
             updateReceipt = devTreeManager.addNewDevice(deviceId)
 
             deviceIndexArray.push(updateReceipt[1]["idx"].toString())
@@ -43,21 +45,6 @@ describe("DeviceTreeManager Class", function () {
             newLeafArray.push(updateReceipt[2])
             oriRootArray.push(updateReceipt[1]["flow"][0]["root"].toString())
             newRootArray.push(updateReceipt[1]["flow"][1]["root"].toString())
-            // console.log({
-            //     deviceIndex: updateReceipt[1]["idx"].toString(),
-            //     merkleProof: updateReceipt[1]["mk_prf"].map((val) =>
-            //         val.toString()
-            //     ),
-            //     oriLeaf: updateReceipt[0],
-            //     newLeaf: updateReceipt[2],
-            //     oriRoot: updateReceipt[1]["flow"][0]["root"].toString(),
-            //     newRoot: updateReceipt[1]["flow"][1]["root"].toString(),
-            //     // ori_leafNode:
-            //     //     updateReceipt[1]["flow"][0]["leaf_node"].toString(),
-
-            //     // new_leafNode:
-            //     //     updateReceipt[1]["flow"][1]["leaf_node"].toString(),
-            // })
         }
 
         const result = JSON.stringify({
@@ -69,10 +56,79 @@ describe("DeviceTreeManager Class", function () {
             newRoot: newRootArray,
         })
 
-        fs.writeFileSync("../../inputs", result)
+        const folderPath = "./inputs"
+        const fileName = "zkRECRegister_input.json"
+        const filePath = `${folderPath}/${fileName}`
+
+        fs.writeFileSync(filePath, result)
+
+        console.log(result)
+    }) */
+
+    it("Device sign msg and update merkle tree leaf", () => {
+        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(6, 10)
+
+        let MsgArray = []
+        let AxArray = []
+        let AyArray = []
+        let R8xArray = []
+        let R8yArray = []
+        let SArray = []
+
+        let deviceIndexArray = []
+        let merkleProofArray = []
+        let oriLeafArray = []
+        let newLeafArray = []
+        let oriRootArray = []
+        let newRootArray = []
+
+        let updateReceipt
+
+        for (let deviceId = 0; deviceId < 10; deviceId++) {
+            let device = devTreeManager.initDevice(deviceId)
+            let signature = device.signMsg(99n)
+
+            MsgArray.push(signature[0]["M"].toString())
+            AxArray.push(signature[0]["Ax"].toString())
+            AyArray.push(signature[0]["Ay"].toString())
+            R8xArray.push(signature[1]["R8x"].toString())
+            R8yArray.push(signature[1]["R8y"].toString())
+            SArray.push(signature[1]["S"].toString())
+
+            updateReceipt = devTreeManager.addNewDevice(deviceId)
+
+            deviceIndexArray.push(updateReceipt[1]["idx"].toString())
+            merkleProofArray.push(
+                updateReceipt[1]["mk_prf"].map((val) => val.toString())
+            )
+            oriLeafArray.push(updateReceipt[0])
+            newLeafArray.push(updateReceipt[2])
+            oriRootArray.push(updateReceipt[1]["flow"][0]["root"].toString())
+            newRootArray.push(updateReceipt[1]["flow"][1]["root"].toString())
+        }
+
+        const result = JSON.stringify({
+            Ax: AxArray,
+            Ay: AyArray,
+            R8x: R8xArray,
+            R8y: R8yArray,
+            S: SArray,
+            M: MsgArray,
+
+            deviceIndex: deviceIndexArray,
+            merkleProof: merkleProofArray,
+            oriLeaf: oriLeafArray,
+            newLeaf: newLeafArray,
+            oriRoot: oriRootArray,
+            newRoot: newRootArray,
+        })
+
+        const folderPath = "./inputs"
+        const fileName = "zkREC_input.json"
+        const filePath = `${folderPath}/${fileName}`
+
+        fs.writeFileSync(filePath, result)
 
         console.log(result)
     })
-
-    describe("Simple tests", function () {})
 })
