@@ -69,26 +69,37 @@ export class DeviceTreeManager extends ZKArray {
         )
 
         // 把新建立的裝置存入Merkle Tree中紀錄
-        return this.do(deviceId, (newDevice) => {
-            newDevice.do("owner", (owner) => {
-                owner.set(bigIntOwner)
-            })
-            newDevice.do("deviceId", (deviceId) => {
-                deviceId.set(binIntDeviceId)
-            })
-            newDevice.do("nonce", (nonce) => {
-                nonce.set(0n)
-            })
-            newDevice.do("totalKW", (totalKW) => {
-                totalKW.set(0n)
-            })
-            newDevice.do("Ax", (Ax) => {
-                Ax.set(pubX)
-            })
-            newDevice.do("Ay", (Ay) => {
-                Ay.set(pubY)
-            })
-        })
+        return [
+            ["0", "0", "0", "0", "0", "0"],
+            this.do(deviceId, (newDevice) => {
+                newDevice.do("owner", (owner) => {
+                    owner.set(bigIntOwner)
+                })
+                newDevice.do("deviceId", (deviceId) => {
+                    deviceId.set(binIntDeviceId)
+                })
+                newDevice.do("nonce", (nonce) => {
+                    nonce.set(0n)
+                })
+                newDevice.do("totalKW", (totalKW) => {
+                    totalKW.set(0n)
+                })
+                newDevice.do("Ax", (Ax) => {
+                    Ax.set(pubX)
+                })
+                newDevice.do("Ay", (Ay) => {
+                    Ay.set(pubY)
+                })
+            }),
+            [
+                bigIntOwner.toString(),
+                binIntDeviceId.toString(),
+                "0",
+                "0",
+                pubX.toString(),
+                pubY.toString(),
+            ],
+        ]
     }
 
     getDevice() {

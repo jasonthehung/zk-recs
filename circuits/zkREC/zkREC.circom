@@ -66,8 +66,8 @@ template ZkREC(device_tree_height) {
     EdDSAPoseidonVerifier()(1, Ax, Ay, S, R8x, R8y, M);
 
     VerifyExists(device_tree_height)(idx, Poseidon(5)[leaf[0]], merkle_proof, merkle_root[0]);
-        
     VerifyExists(device_tree_height)(idx,  Poseidon(5)[leaf[1]], merkle_proof, merkle_root[1]);
+    
     leaf[0][] === leaf[1][]
     leaf[0][] === leaf[1][]
     leaf[0][] === leaf[1][]
