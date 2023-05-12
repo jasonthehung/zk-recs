@@ -81,6 +81,10 @@ export class Device extends ZKObject {
     updateOwner(newOwner: string) {
         this.owner = BigInt(newOwner)
     }
+
+    getPrivateKey() {
+        return this.privateKey
+    }
 }
 
 // signPoseidon(sig_msg: bigint) {

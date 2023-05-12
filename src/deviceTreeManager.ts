@@ -36,7 +36,13 @@ export class DeviceTreeManager extends ZKArray {
             // 計算得到public key
             const [pubX, pubY] = getPublicKey(privateKey)
 
-            return new Device(owner, deviceId, privateKey, pubX, pubY)
+            // 把新建立的裝置放入Map中紀錄
+            this.deviceMap.set(
+                deviceId,
+                new Device(owner, deviceId, privateKey, pubX, pubY)
+            )
+
+            // return new Device(owner, deviceId, privateKey, pubX, pubY)
         }
     }
 
@@ -110,6 +116,97 @@ export class DeviceTreeManager extends ZKArray {
         ]
     }
 
+    deviceAttest(deviceId: number, value: bigint) {
+        let device = this.deviceMap.get(deviceId)
+
+        if (device === undefined) {
+            throw new Error(`Device: ${deviceId} haven't been register`)
+        } else {
+            const thisDevice = this.deviceMap.get(deviceId)
+
+            // 得到device的資料
+            // const [_owner, _deviceId, _nonce, _totalKW, _pubX, _pubY] = []
+            let _owner
+            let _deviceId
+            let _nonce
+            let _totalKW
+            let _pubX
+            let _pubY
+
+            // console.log(
+            //     `owner: ${_owner}\ndeviceID: ${_deviceId}\nnonce: ${_nonce}\ntotalKW: ${_totalKW}\npubX: ${_pubX}\npubY: ${_pubY}`
+            // )
+
+            this.do(deviceId, (newDevice) => {
+                newDevice.get("owner", (owner) => {
+                    _owner = owner.toObject()
+                })
+                newDevice.get("deviceId", (deviceId) => {
+                    _deviceId = deviceId.toObject()
+                })
+                newDevice.get("nonce", (nonce) => {
+                    _nonce = nonce.toObject()
+                })
+                newDevice.get("totalKW", (totalKW) => {
+                    _totalKW = totalKW.toObject()
+                })
+                newDevice.get("Ax", (Ax) => {
+                    _pubX = Ax.toObject()
+                })
+                newDevice.get("Ay", (Ay) => {
+                    _pubY = Ay.toObject()
+                })
+            })
+
+            // console.log(debug["flow"][0])
+            // console.log(debug["flow"][1])
+
+            // * [0] -> 簽章 & Message & Public Key
+            // * [1] -> ori device leaf data
+            // * [2] -> merkle proof of updating
+            // * [3] -> new device leaf data
+            return [
+                device.signMsg(value),
+                [
+                    _owner.toString(),
+                    _deviceId.toString(),
+                    _nonce.toString(),
+                    _totalKW.toString(),
+                    _pubX.toString(),
+                    _pubY.toString(),
+                ],
+                this.do(deviceId, (newDevice) => {
+                    newDevice.do("owner", (owner) => {
+                        owner.set(_owner)
+                    })
+                    newDevice.do("deviceId", (deviceId) => {
+                        deviceId.set(_deviceId)
+                    })
+                    newDevice.do("nonce", (nonce) => {
+                        nonce.set(_nonce + 1n)
+                    })
+                    newDevice.do("totalKW", (totalKW) => {
+                        totalKW.set(_totalKW + value)
+                    })
+                    newDevice.do("Ax", (Ax) => {
+                        Ax.set(_pubX as bigint)
+                    })
+                    newDevice.do("Ay", (Ay) => {
+                        Ay.set(_pubY as bigint)
+                    })
+                }),
+                [
+                    _owner.toString(),
+                    _deviceId.toString(),
+                    (_nonce + 1n).toString(),
+                    (_totalKW + value).toString(),
+                    _pubX.toString(),
+                    _pubY.toString(),
+                ],
+            ]
+        }
+    }
+
     getDevice() {
         return this.toObject()
     }
@@ -118,7 +215,5 @@ export class DeviceTreeManager extends ZKArray {
     updateDeviceOwner(newOwner: string, deviceId: number) {}
 
     // TODO
-    deleteDevice(deviceId: number) {
-        this.deviceMap.delete(deviceId)
-    }
+    deleteDevice(deviceId: number) {}
 }
