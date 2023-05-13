@@ -5,7 +5,7 @@ if [ -f "./test/circuits/$1/$1.r1cs" ]; then
     [ ! -f $1_setup ] && mkdir -p $1_setup
     [ ! -f $1_sol ] && mkdir -p $1_sol
 
-    snarkjs groth16 setup $1.r1cs ../../../ptau/final_21.ptau $1_setup/$1_0000.zkey
+    snarkjs groth16 setup $1.r1cs ../../../ptau/final_23.ptau $1_setup/$1_0000.zkey
     snarkjs zkey contribute $1_setup/$1_0000.zkey $1_setup/$1_0001.zkey --name="1st Contributor Name" -v -e="Another"
     snarkjs zkey contribute $1_setup/$1_0001.zkey $1_setup/$1_0002.zkey --name="Second contribution Name" -v -e="Another random entropy"
     snarkjs zkey export bellman $1_setup/$1_0002.zkey $1_setup/challenge_phase2_0003

@@ -4,7 +4,6 @@ import { initSigner } from "../src/utils/keys"
 import { initSignerFromDevice } from "../src/device"
 
 import * as fs from "fs"
-import { Device } from "../src/device"
 
 describe("DeviceTreeManager Class", function () {
     before(async () => {
@@ -66,7 +65,7 @@ describe("DeviceTreeManager Class", function () {
     }) */
 
     it("Device sign msg and update merkle tree leaf", () => {
-        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(10, 1024)
+        let devTreeManager: DeviceTreeManager = new DeviceTreeManager(8, 256)
 
         let MsgArray = []
         let AxArray = []
@@ -82,7 +81,7 @@ describe("DeviceTreeManager Class", function () {
         let oriRootArray = []
         let newRootArray = []
 
-        for (let deviceId = 0; deviceId < 2; deviceId++) {
+        for (let deviceId = 0; deviceId < 256; deviceId++) {
             devTreeManager.initDevice(deviceId)
 
             let signature = devTreeManager.deviceAttest(deviceId, 99n)
