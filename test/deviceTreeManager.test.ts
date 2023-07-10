@@ -41,7 +41,7 @@ describe("DeviceTreeManager Class", function () {
 
         devTreeManager.initDevice(0)
 
-        for (let counter = 0; counter < 16; counter++) {
+        for (let counter = 0; counter < 512; counter++) {
             let signature = devTreeManager.deviceAttest(0, 100n)
 
             MsgArray.push(signature[0][0]["M"].toString())
