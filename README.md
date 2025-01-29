@@ -33,17 +33,17 @@ test folder
 
 Actual Execution
 
-    In the test/circuits folder, create a new folder named zkREC_v2_test_Custom Tree Height_Custom Verifiable Groups.
+In the test/circuits folder, create a new folder named zkREC_v2_test_Custom Tree Height_Custom Verifiable Groups.
 
-    Inside the newly created folder, add zkREC_v2_test.circom.
+Inside the newly created folder, add zkREC_v2_test.circom.
 
-    Copy and paste the following code into the .circom file (ensure that you have installed circom version 2.1.0 or higher):
+Copy and paste the following code into the .circom file (ensure that you have installed circom version 2.1.0 or higher):
 
-pragma circom 2.1.0;
+    pragma circom 2.1.0;
 
-include "../../../circuits/zkREC_v2/zkREC_v2.circom";
+    include "../../../circuits/zkREC_v2/zkREC_v2.circom";
 
-component main = ZkREC_v2(Custom Tree Height, Custom Verifiable Groups);
+    component main = ZkREC_v2(Custom Tree Height, Custom Verifiable Groups);
 
 Use shell/build.sh to process the files required for the G algorithm.
 
