@@ -1,58 +1,56 @@
-# zk-recs
+zk-recs
 
-論文連結：to be continued...
+Paper link: to be continued...
 
-注意：若要實際執行 G 演算法，需要先至[snarkjs github](https://github.com/iden3/snarkjs/blob/master/README.md#7-prepare-phase-2)下載.ptau 檔案，此電路需要至少下載 ptau 23 的.ptau 檔，下載完成後將檔案名稱改為 final_23.ptau 並放置在 ptau 目錄下
+Note: To execute the G algorithm, you need to first download the .ptau file from the snarkjs GitHub. This circuit requires at least the ptau 23 .ptau file. After downloading, rename the file to final_23.ptau and place it in the ptau directory.
+Folders
+Circuits folder
 
-## Folders
+    All the circuit codes used.
 
----
+src folder
 
-### **Circuits** folder
+    Backend server code.
 
--   所有會使用到的電路程式碼
+lib folder
 
-### **src** folder
+    Source code library.
 
--   後端服務器程式碼
+inputs folder
 
-### **lib** folder
+    Parameters produced by the backend server, used as inputs for the P algorithm.
 
--   source code library
+shell folder
 
-### **inputs** folder
+    Simplifies snarkjs's complex commands.
 
--   後端服務器產出之輸入給 P 演算法的參數
+test folder
 
-### **shell** folder
+    deviceTreeManager.test.ts contains multiple unit tests. The testing process simulates the backend server's data collection and generates inputs for the P algorithm (inputs will be stored in the inputs folder).
+    Other folders in the test folder are used to store proof, V algorithm smart contracts, and other data.
+    Parameters (i.e., proof) to be sent to the V algorithm are stored in test/circuits/zkREC_v2_test & Tree Height & Verifiable Groups/zkREC_v2_test & proof/Date & zkREC_v2_test.soliditycalldata.json.
+    The V algorithm smart contract is located in test/circuits/zkREC_v2_test & Tree Height & Verifiable Groups/zkREC_v2_test & sol/zkREC_v2_test_verifier.sol.
 
--   簡化 snarkjs 繁瑣的 commands
+Actual Execution
 
-### **test** folder
+    In the test/circuits folder, create a new folder named zkREC_v2_test_Custom Tree Height_Custom Verifiable Groups.
 
--   deviceTreeManager.test.ts 內有多個單元測試，測試過程即為模擬後端服務器收集資料過程，並且產出 inputs 給 P 演算法 (inputs 會儲存於 inputs folder)
--   test 資料夾內的其餘資料夾是用來存放 proof, V 演算法智能合約...等資料
--   要傳給 V 演算法的參數(即 proof)存儲存於 test / circuits / zkREC_v2_test & 樹高 & 可驗證組數 / zkREC_v2_test & proof / 日期 & zkREC_v2_test.soliditycalldata.json
--   V 演算法智能合約 test / circuits / zkREC_v2_test & 樹高 & 可驗證組數 / zkREC_v2_test & sol / zkREC_v2_test_verifier.sol
+    Inside the newly created folder, add zkREC_v2_test.circom.
 
-## 實際執行
+    Copy and paste the following code into the .circom file (ensure that you have installed circom version 2.1.0 or higher):
 
----
+pragma circom 2.1.0;
 
-1. 在 test / circuits 資料夾新增資料夾，命名為 **zkREC_v2_test\_自訂樹高\_自訂可驗證組數**
-2. 在新建的資料夾內新增 **zkREC_v2_test.circom**
-3. .circom 檔案內複製貼上以下程式碼 (請確保已經安裝 circom 2.1.0 以上的 compiler)
+include "../../../circuits/zkREC_v2/zkREC_v2.circom";
 
-    ```
-    pragma circom 2.1.0;
+component main = ZkREC_v2(Custom Tree Height, Custom Verifiable Groups);
 
-    include "../../../circuits/zkREC_v2/zkREC_v2.circom";
+Use shell/build.sh to process the files required for the G algorithm.
 
-    component main = ZkREC_v2(自訂樹高, 自訂可驗證組數);
-    ```
+Use shell/G.sh to perform the G algorithm calculation. This process may require a significant amount of computational time, so it's recommended to reduce the "Verifiable Groups" to shorten the computation time.
 
-4. 使用 shell / build.sh 處理 G 演算法所需文件
-5. 使用 shell / G.sh 進行 G 演算法計算，此過程可能會需要大量運算時間，建議可以降低"可驗證組數"來減少運算時間
-6. 透過 deviceTreeManager.test.ts 產生所需要的 inputs
-7. 使用 shell / P.sh 將 inputs 傳給 P 演算法生成 proof
-8. 使用 shell / V.sh 可以先在鏈下對 proof 進行驗證，先看一下 proof 是否正確，若回傳為 true，則代表 step6. 在 deviceTreeManager.test.ts 中所進行的操作皆通過電路的檢查，並生成一份可供所有人驗證的 proof
+Generate the necessary inputs through deviceTreeManager.test.ts.
+
+Use shell/P.sh to send the inputs to the P algorithm to generate proof.
+
+Use shell/V.sh to validate the proof off-chain. Check if the proof is correct; if the return is true, it means that the steps in deviceTreeManager.test.ts have passed the circuit check and generated a proof that can be verified by others.
