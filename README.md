@@ -1,6 +1,6 @@
 zk-recs
 
-Paper link: to be continued...
+Paper link: http://etds.lib.ntnu.edu.tw/thesis/detail/c3deedde8403d75d0d3091bb60a6e374/?seq=1
 
 Note: To execute the G algorithm, you need to first download the .ptau file from the snarkjs GitHub. This circuit requires at least the ptau 23 .ptau file. After downloading, rename the file to final_23.ptau and place it in the ptau directory.
 Folders
